@@ -23,7 +23,7 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
-     {
+    {
         title: 'Rooms',
         href: '/rooms',
         icon: House,

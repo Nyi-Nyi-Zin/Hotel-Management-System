@@ -15,6 +15,7 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('rooms',RoomController::class)->middleware(['auth','verified']);
-
-require __DIR__.'/settings.php';
+// Rooms resource routes
+Route::resource('rooms', RoomController::class)
+    ->only(['index'])
+    ->middleware(['auth','verified']);

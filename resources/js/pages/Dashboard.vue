@@ -10,10 +10,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: 'Dashboard',
         href: dashboard().url,
     },
-    {
-        title: 'Rooms',
-        href: dashboard().url,
-    },
 ];
 </script>
 

@@ -4,51 +4,67 @@ namespace App\Http\Controllers;
 
 use App\Models\Room;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class RoomController extends Controller
 {
+    // Display all rooms
     public function index()
     {
         $rooms = Room::all();
-        return Inertia::render('Rooms/Index', ['rooms' => $rooms]);
+        return inertia('Rooms/Index', compact('rooms'));
     }
 
-    // we can remove create() and edit() methods entirely
-    // modal will handle both
+    // Show create form
+    public function create()
+    {
+        return inertia('Rooms/Create');
+    }
 
+    // Store a new room
     public function store(Request $request)
     {
-        Room::create([
-            'room_number' => $request->room_number,
-            'floor' => $request->floor,
-            'capacity' => $request->capacity,
-            'price' => $request->price,
-            'facilities' => $request->facilities,
-            'description' => $request->description,
+        $validated = $request->validate([
+            'room_number' => 'required|string|unique:rooms,room_number',
+            'floor' => 'required|integer',
+            'capacity' => 'required|integer',
+            'price' => 'required|numeric',
+            'facilities' => 'nullable|array',
+            'description' => 'nullable|string',
         ]);
 
-        // Return updated rooms list to Index
-        return redirect()->back();
+        Room::create($validated);
+
+        return redirect()->route('rooms.index')->with('success', 'Room created successfully.');
     }
 
+    // Show edit form
+    public function edit(Room $room)
+    {
+        return inertia('Rooms/Edit', compact('room'));
+    }
+
+    // Update a room
     public function update(Request $request, Room $room)
     {
-        $room->update([
-            'room_number' => $request->room_number,
-            'floor' => $request->floor,
-            'capacity' => $request->capacity,
-            'price' => $request->price,
-            'facilities' => $request->facilities,
-            'description' => $request->description,
+        $validated = $request->validate([
+            'room_number' => 'required|string|unique:rooms,room_number,' . $room->id,
+            'floor' => 'required|integer',
+            'capacity' => 'required|integer',
+            'price' => 'required|numeric',
+            'facilities' => 'nullable|array',
+            'description' => 'nullable|string',
         ]);
 
-        return redirect()->back();
+        $room->update($validated);
+
+        return redirect()->route('rooms.index')->with('success', 'Room updated successfully.');
     }
 
+    // Delete a room
     public function destroy(Room $room)
     {
         $room->delete();
-        return redirect()->back();
+
+        return redirect()->route('rooms.index')->with('success', 'Room deleted successfully.');
     }
 }
